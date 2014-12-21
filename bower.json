@@ -11,6 +11,8 @@
   "homepage": "https://github.com/wardbell/bardjs",
   "ignore": [
     "**/.*",
+    "**/*.js",
+    "**/*.html",
     "node_modules",
     "bower_components",
     "test",
