@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no" />
+    <title>bardjs tests</title>
+
+    <style>
+        body {
+            font: 20px/1.5 "Helvetica Neue", Helvetica, Arial, sans-serif;
+            padding-left: 20px;
+        }
+    </style>
+
+    <!--BEWARE of using any app styles as @media can screw up tests -->
+
+    <!-- inject-testvendorcss:css -->
+    <link rel="stylesheet" href="node_modules/mocha/mocha.css">
+    <!-- endinject -->
+
+</head>
+<body>
+
+<h1><a href="specs.html">bardjs tests</a></h1>
+
+
+<div id="mocha"></div>
+
+
+    <!-- inject-testharness:js -->
+    <script src="node_modules/mocha/mocha.js"></script>
+    <script src="node_modules/chai/chai.js"></script>
+    <script src="node_modules/mocha-clean/index.js"></script>
+    <script src="bower_components/sinon/index.js"></script>
+    <script src="node_modules/sinon-chai/lib/sinon-chai.js"></script>
+    <!-- endinject -->
+
+    <script>
+        expect = chai.expect;
+        AssertionError = chai.AssertionError;
+        mocha.setup('bdd');
+        mocha.traceIgnores = ['mocha.js', 'chai.js', 'angular.js'];
+    </script>
+
+    <!-- inject-testvendor:js -->
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-mocks/angular-mocks.js"></script>
+    <!-- endinject -->
+
+    <!-- inject:js -->
+    <script src="bard.js"></script>
+    <!-- endinject -->
+
+    <!-- inject-helpers:js -->
+    <script src="tests/helpers/bindPolyfill.js"></script>
+    <!-- endinject -->
+
+    <!-- inject-specs:js -->
+    <script src="tests/bard.inject.spec.js"></script>
+    <script src="tests/bard.mockService.spec.js"></script>
+    <!-- endinject -->
+
+    <script>
+        mocha.run();
+    </script>
+
+</body>
+</html>
