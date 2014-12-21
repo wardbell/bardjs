@@ -11,7 +11,7 @@
         fakeRouteProvider: fakeRouteProvider,
         fakeStateProvider: fakeStateProvider,
         fakeToastr: fakeToastr,
-        injector: injector,
+        inject: bardInject,
         mockService: mockService,
         replaceAccentChars: replaceAccentChars,
         verifyNoOutstandingHttpRequests: verifyNoOutstandingHttpRequests,
@@ -172,6 +172,82 @@
         return angular.mock.module.apply(angular.mock, args);
     }
 
+    /**
+     * inject selected services into the windows object during test
+     * then remove them when test ends with an `afterEach`.
+     *
+     * spares us the repetition of creating common service vars and injecting them
+     *
+     * inject arguments may take one of 3 forms:
+     *
+     *    function    - This fn will be passed to ngMocks.inject.
+     *                  Annotations extracted after inject does its thing.
+     *    [strings]   - same string array you'd use to set fn.$inject
+     *    (...string) - string arguments turned into a string array
+     *
+     * usage:
+     *    bard.inject('$log', 'dataservice');
+     *    bard.inject(['$log', 'dataservice']);
+     *    bard.inject(function($log, dataservice) { ... });
+     */
+    function bardInject () {
+        var body = '',
+            cleanupBody = '',
+            params;
+
+        var first = arguments[0];
+
+        if (typeof first === 'function') {
+            // use ngMocks.inject to execute the func in the arg
+            angular.mock.inject(first);
+            params = first.$inject;
+            if (!params) {
+                // unfortunately ngMocks.inject only prepares fn.$inject for us
+                // if using strictDi as of v.1.3.8
+                // therefore, apply its annotation extraction logic manually
+                params = getFnParams(first);
+            }
+        }
+        else if (angular.isArray(first)) {
+            params = first; // assume is an array of strings
+        }
+        else { // assume all args are strings
+            params = Array.prototype.slice.call(arguments, 0);
+        }
+
+        // we will annotate the generated fn with this string.
+        var annotation = '\'' + params.join('\',\'') + '\',';
+
+        angular.forEach(params, function(name, ix) {
+            var _name_,
+                pathName = name.split('.'),
+                pathLen = pathName.length;
+
+            if (pathLen > 1) {
+                // name is a path like 'block.foo'. Can't use as identifier
+                // assume last segment should be identifier name, e.g. 'foo'
+                name = pathName[pathLen - 1];
+            }
+
+            _name_ = '_' + name + '_';
+            params[ix] = _name_;
+            body += name + '=' + _name_ + ';';
+            cleanupBody += 'delete window.' + name + ';';
+
+            // todo: tolerate component names that are invalid JS identifiers, e.g. 'burning man'
+        });
+
+        var fn = 'function(' + params.join(',') + ') {' + body + '}';
+
+        fn = '[' + annotation + fn + ']';
+
+        var exp = 'angular.mock.inject(' + fn + ');' +
+                  'afterEach(function() {' + cleanupBody + '});'; // remove from window.
+
+        /* jshint evil:true */
+        new Function(exp)();
+    }
+
     function fakeLogger($provide) {
         $provide.value('logger', sinon.stub({
             info: function() {},
@@ -290,72 +366,6 @@
         return params;
     }
 
-    /**
-     * inject selected services into the windows object during test
-     * then remove them when test ends with an `afterEach`.
-     *
-     * spares us the repetition of creating common service vars and injecting them
-     *
-     * injector arguments may take one of 3 forms:
-     *
-     *    function    - This fn will be passed to ngMocks.inject.
-     *                  Annotations extracted after inject does its thing.
-     *    [strings]   - same string array you'd use to set fn.$inject
-     *    (...string) - string arguments turned into a string array
-     *
-     */
-    function injector () {
-        var body = '',
-            cleanupBody = '',
-            params;
-
-        var first = arguments[0];
-
-        if (typeof first === 'function') {
-            // use ngMocks.inject to execute the injector function
-            inject(first);
-            // ngMocks.inject prepares fn.$inject for us
-            params = first.$inject;
-        }
-        else if (angular.isArray(first)) {
-            params = first; // assume is an array of strings
-        }
-        else { // assume all args are strings
-            params = Array.prototype.slice.call(arguments, 0);
-        }
-
-        // we will annotate the generated fn with this string.
-        var annotation = '\'' + params.join('\',\'') + '\',';
-
-        angular.forEach(params, function(name, ix) {
-            var _name_,
-                pathName = name.split('.'),
-                pathLen = pathName.length;
-
-            if (pathLen > 1) {
-                // name is a path like 'block.foo'. Can't use as identifier
-                // assume last segment should be identifier name, e.g. 'foo'
-                name = pathName[pathLen - 1];
-            }
-
-            _name_ = '_' + name + '_';
-            params[ix] = _name_;
-            body += name + '=' + _name_ + ';';
-            cleanupBody += 'delete window.' + name + ';';
-
-            // todo: tolerate component names that are invalid JS identifiers, e.g. 'burning man'
-        });
-
-        var fn = 'function(' + params.join(',') + ') {' + body + '}';
-
-        fn = '[' + annotation + fn + ']';
-
-        var exp = 'inject(' + fn + ');' +
-                  'afterEach(function() {' + cleanupBody + '});'; // remove from window.
-
-        /* jshint evil:true */
-        new Function(exp)();
-    }
 
     /**
      * Mocks out a service with sinon stubbed functions
@@ -472,7 +482,7 @@
      *  For use with ngMocks; doesn't work for midway tests
      */
     function verifyNoOutstandingHttpRequests () {
-        afterEach(inject(function($httpBackend) {
+        afterEach(angular.mock.inject(function($httpBackend) {
             $httpBackend.verifyNoOutstandingExpectation();
             $httpBackend.verifyNoOutstandingRequest();
         }));
