@@ -1,4 +1,4 @@
 bardjs Change Log
 ===================
 
-Not yet released
+v.0.0.1 - Prelease
