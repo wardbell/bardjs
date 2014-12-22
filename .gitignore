@@ -13,6 +13,8 @@ node_modules
 /src/client/build
 /src/build
 bower_components
+/report
+/dist
 **/test/coverage
 
 
