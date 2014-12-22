@@ -145,7 +145,8 @@ function getHeader() {
         ' * @version v<%= pkg.version %>',
         ' * @link <%= pkg.homepage %>',
         ' * @license <%= pkg.license %>',
-        ' */'
+        ' */',
+        ''
     ].join('\n');
     return $.header(template, {
         pkg: pkg

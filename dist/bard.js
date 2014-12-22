@@ -4,7 +4,8 @@
  * @version v0.0.1
  * @link https://github.com/wardbell/bardjs
  * @license MIT
- *//*jshint -W079, -W117 */
+ */
+/*jshint -W079, -W117 */
 (function() {
     var bard = {
         $httpBackend: $httpBackendReal,
