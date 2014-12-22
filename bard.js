@@ -366,7 +366,6 @@
         return params;
     }
 
-
     /**
      * Mocks out a service with sinon stubbed functions
      * that return the values specified in the config

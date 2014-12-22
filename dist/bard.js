@@ -1,4 +1,10 @@
-/*jshint -W079, -W117 */
+/**
+ * bardjs - Mocha/chai spec helpers for testing angular apps
+ * @authors John Papa,Ward Bell
+ * @version v0.0.1
+ * @link https://github.com/wardbell/bardjs
+ * @license MIT
+ *//*jshint -W079, -W117 */
 (function() {
     var bard = {
         $httpBackend: $httpBackendReal,
@@ -365,7 +371,6 @@
         }
         return params;
     }
-
 
     /**
      * Mocks out a service with sinon stubbed functions
