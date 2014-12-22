@@ -10,9 +10,8 @@
   "license": "MIT",
   "homepage": "https://github.com/wardbell/bardjs",
   "ignore": [
-    "!dist",
-    "**/.*",
-    "**/*.js",
+    ".*",
+    "*.js",
     "**/*.html",
     "node_modules",
     "bower_components",
