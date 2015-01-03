@@ -8,7 +8,7 @@
   ],
   "main": [
       "./dist/bard.js",
-      "./dist/bard-ngRouteTester.js",
+      "./dist/bard-ngRouteTester.js"
   ],
   "license": "MIT",
   "homepage": "https://github.com/wardbell/bardjs",
