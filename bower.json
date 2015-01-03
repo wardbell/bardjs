@@ -1,12 +1,15 @@
 {
   "name": "bardjs",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Mocha/chai spec helpers for testing angular apps",
   "authors": [
     "John Papa",
     "Ward Bell"
   ],
-  "main": "./dist/bard.js",
+  "main": [
+      "./dist/bard.js",
+      "./dist/bard-ngRouteTester.js",
+  ],
   "license": "MIT",
   "homepage": "https://github.com/wardbell/bardjs",
   "ignore": [

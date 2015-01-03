@@ -19,7 +19,7 @@ gulp.task('default', ['help']);
  * Lint the code, create coverage report, and a visualizer
  * @return {Stream}
  */
-gulp.task('analyze', function() {
+gulp.task('vet', function() {
     log('Analyzing source with JSHint, JSCS, and Plato');
 
     startPlatoVisualizer();

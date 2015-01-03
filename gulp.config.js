@@ -8,7 +8,8 @@ module.exports = function() {
         var config = {
             specs: ['./tests/**/*.spec.js'],
             js: [
-                './bard.js'
+                './bard.js',
+                './bard-ngRouteTester.js'
             ],
             plato: {
                 js: './bard.js'

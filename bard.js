@@ -17,24 +17,13 @@
         verifyNoOutstandingHttpRequests: verifyNoOutstandingHttpRequests,
         wrapWithDone: wrapWithDone
     };
-    window.bard = bard;
-
-    /**
-     * Define a test application module with faked logger for use with ngMidwayTester
-     *
-     * Useage:
-     *    tester = ngMidwayTester('testerApp', {mockLocationPaths: false});
-     */
-    angular.module('testerApp', ['app', fakeLogger]);
+    window.bard = angular.expand(window.bard || {}, bard);
 
     ////////////////////////
     /*jshint -W101 */
     /**
      *  Replaces the ngMock'ed $httpBackend with the real one from ng thus
      *  restoring the ability to issue AJAX calls to the backend with $http.
-     *
-     *  This alternative to the ngMidwayTester preserves the ngMocks feature set
-     *  while restoring $http calls that pass through to the server
      *
      *  Note that $q remains ngMocked so you must flush $http calls ($rootScope.$digest).
      *  Use $rootScope.$apply() for this purpose.
@@ -79,8 +68,6 @@
      *  Replaces the ngMock'ed $q with the real one from ng thus
      *  obviating the need to flush $http and $q queues
      *  at the expense of ability to control $q timing.
-     *
-     *  This alternative to the ngMidwayTester preserves the other ngMocks features
      *
      *  Usage:
      *
@@ -242,7 +229,7 @@
         fn = '[' + annotation + fn + ']';
 
         var exp = 'angular.mock.inject(' + fn + ');' +
-                  'afterEach(function() {' + cleanupBody + '});'; // remove from window.
+            'afterEach(function() {' + cleanupBody + '});'; // remove from window.
 
         /* jshint evil:true */
         new Function(exp)();
@@ -478,7 +465,7 @@
 
     /**
      *  Assert that there are no outstanding HTTP requests after test is complete
-     *  For use with ngMocks; doesn't work for midway tests
+     *  For use with ngMocks; doesn't work for async server integration tests
      */
     function verifyNoOutstandingHttpRequests () {
         afterEach(angular.mock.inject(function($httpBackend) {
