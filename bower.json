@@ -14,7 +14,11 @@
   "homepage": "https://github.com/wardbell/bardjs",
   "ignore": [
     "node_modules",
-    "bower_components"
+    "bower_components",
+    "tests",
+    "./*.html",
+    "./*.js",
+    "./\.*.*"
   ],
   "devDependencies": {
     "angular": "~1.3.8",
