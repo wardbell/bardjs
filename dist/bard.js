@@ -24,7 +24,7 @@
         verifyNoOutstandingHttpRequests: verifyNoOutstandingHttpRequests,
         wrapWithDone: wrapWithDone
     };
-    window.bard = angular.expand(window.bard || {}, bard);
+    window.bard = angular.extend(window.bard || {}, bard);
 
     ////////////////////////
     /*jshint -W101 */
