@@ -1,7 +1,7 @@
 /**
  * bardjs - Mocha/chai spec helpers for testing angular apps
  * @authors John Papa,Ward Bell
- * @version v0.0.4
+ * @version v0.0.5
  * @link https://github.com/wardbell/bardjs
  * @license MIT
  */
@@ -24,6 +24,17 @@
         verifyNoOutstandingHttpRequests: verifyNoOutstandingHttpRequests,
         wrapWithDone: wrapWithDone
     };
+
+    var currentSpec = null;
+
+    if (window.jasmine || window.mocha) {
+        window.beforeEach(function() { currentSpec = this; });
+        window.afterEach(function() { currentSpec = null; });
+    } else {
+        // These features don't work outside of Jasmine/Mocha tests
+        bard.inject = function() { throw 'bard.inject only works within jasmine or mocha tests'; };
+    }
+
     window.bard = angular.extend(window.bard || {}, bard);
 
     ////////////////////////
@@ -127,7 +138,7 @@
         var args = Array.prototype.slice.call(arguments, 0);
         args = args.concat(fakeRouteHelperProvider, fakeRouteProvider,
                            fakeStateProvider, fakeToastr);
-        angular.mock.module.apply(angular.mock, args);
+        return angular.mock.module.apply(angular.mock, args);
     }
 
     /**
@@ -236,10 +247,11 @@
         fn = '[' + annotation + fn + ']';
 
         var exp = 'angular.mock.inject(' + fn + ');' +
-            'afterEach(function() {' + cleanupBody + '});'; // remove from window.
+            'window.afterEach(function() {' + cleanupBody + '});'; // remove from window.
 
         /* jshint evil:true */
-        new Function(exp)();
+        var workFn = new Function(exp);
+        return isSpecRunning() ? workFn() : workFn;
     }
 
     function fakeLogger($provide) {
@@ -359,6 +371,8 @@
         }
         return params;
     }
+
+    function isSpecRunning() { return !!currentSpec; }
 
     /**
      * Mocks out a service with sinon stubbed functions
