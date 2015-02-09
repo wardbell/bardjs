@@ -4,6 +4,7 @@
     var bard = {
         $httpBackend: $httpBackendReal,
         $q: $qReal,
+        addGlobals: addGlobals,
         appModule: appModule,
         assertFail: assertFail,
         asyncModule: asyncModule,
@@ -15,17 +16,19 @@
         fakeToastr: fakeToastr,
         inject: bardInject,
         log: bardLog,
+        mochaRunnerListener: mochaRunnerListener,
         mockService: mockService,
         replaceAccentChars: replaceAccentChars,
         verifyNoOutstandingHttpRequests: verifyNoOutstandingHttpRequests,
         wrapWithDone: wrapWithDone
     };
 
-    var clearInjectFns = [];
+    var clearInject = [];
     var currentSpec = null;
     var debugging = false;
-    var logCounter = 0;
     var global = (function() { return this; })();
+    var logCounter = 0;
+    var okGlobals = [];
 
     if (global.jasmine || global.mocha) {
         global.beforeEach('bard.beforeEach', function() {
@@ -33,8 +36,12 @@
         });
         global.afterEach('bard.afterEach', function() {
             currentSpec = null;
-            clearInjectFns.forEach(function(fn) { fn(); });
-            clearInjectFns.length = 0;
+            bard.log('clearing injected globals: ' + clearInject);
+            angular.forEach(clearInject, function(name) {
+                delete global[name];
+            });
+            clearInject.length = 0;
+            okGlobals.length = 0;
         });
     } else {
         // These features don't work outside of Jasmine/Mocha tests
@@ -124,6 +131,26 @@
             };
         });
     }
+    /**
+     * Add names of globals to list of OK globals for this spec
+     * usage:
+     *    addGlobals(this, 'foo');        // where `this` is the spec context
+     *    addGlobals(this, 'foo', bar);
+     *    addGlobals.bind(this)('foo', 'bar');
+     *    addGlobals(ctx, ['foo', 'bar']) // where ctx is the spec context
+     */
+    function addGlobals() {
+        var args = Array.prototype.slice.call(arguments);
+        var ctx = getCtxFromArgs.bind(this)(args);
+        var globs = angular.isArray(args[0]) ? args[0] : args;
+        angular.forEach(globs, function(g) {
+            if (okGlobals.indexOf(g) === -1) {
+                okGlobals.push(g);
+            }
+        });
+        // if a mocha test, add the ok globals to it
+        ctx && ctx.test.globals && ctx.test.globals(okGlobals);
+    }
 
     /**
      * Prepare ngMocked application feature module
@@ -187,7 +214,7 @@
     /**
      * get/set bard debugging flag
      */
-    function bardDebugging(x){
+    function bardDebugging(x) {
         if (typeof x !== 'undefined') { debugging = !!x; }
         return debugging;
     }
@@ -228,90 +255,52 @@
      *
      */
     function bardInject () {
-        var setGlobal = 'var global=(function(){return this;})();\n';
-        var annotation,
-            cleanup = setGlobal,
-            ctx,
-            first,
-            inject= setGlobal,
-            names = [],
-            params;
-
-        params = Array.prototype.slice.call(arguments, 0);
-        first = params[0];
-
-        if (first && first.test){
-            // the last arg was `this`: the context for this spec
-            ctx = params.shift();
-            first = params[0];
-        } else if (this.test) {
-            // alternative: caller can bind bardInject to the spec context
-            ctx = this;
-        }
+        var args = Array.prototype.slice.call(arguments);
+        var ctx = getCtxFromArgs.bind(this)(args);
+        var first = args[0];
 
         if (typeof first === 'function') {
             // use ngMocks.inject to execute the func in the arg
             angular.mock.inject(first);
-            params = first.$inject;
-            if (!params) {
+            args = first.$inject;
+            if (!args) {
                 // unfortunately ngMocks.inject only prepares inject.$inject for us
                 // if using strictDi as of v.1.3.8
                 // therefore, apply its annotation extraction logic manually
-                params = getinjectParams(first);
+                args = getinjectargs(first);
             }
         }
         else if (angular.isArray(first)) {
-            params = first; // assume is an array of strings
+            args = first; // assume is an array of strings
         }
-        // else assume all params are strings
+        // else assume all args are strings
 
+        var $injector = currentSpec.$injector;
+        if (!$injector) {
+            angular.mock.inject(); // create the injector
+            $injector = currentSpec.$injector;
+        }
 
-        // we will annotate the generated inject with this string.
-        annotation = '\'' + params.join('\',\'') + '\',';
+        var names = [];
+        angular.forEach(args, function(name, ix) {
 
-        angular.forEach(params, function(name, ix) {
-            var _name_,
-                pathName = name.split('.'),
-                pathLen = pathName.length;
+            var value = $injector.get(name);
+            if (value == null) { return; }
 
-            if (pathLen > 1) {
+            var pathName = name.split('.');
+
+            if (pathName.length > 1) {
                 // name is a path like 'block.foo'. Can't use as identifier
                 // assume last segment should be identifier name, e.g. 'foo'
-                name = pathName[pathLen - 1];
+                name = pathName[pathName.length - 1];
+                // todo: tolerate component names that are invalid JS identifiers, e.g. 'burning man'
             }
-
+            global[name] = value;
+            clearInject.push(name);
             names.push(name);
-            _name_ = '_' + name + '_';
-            params[ix] = _name_;
-            inject += 'global.' + name + '=' + _name_ + ';\n';
-            cleanup += 'delete global.' + name + ';\n';
-
-            // todo: tolerate component names that are invalid JS identifiers, e.g. 'burning man'
         });
 
-        if (ctx) {
-            // Mocha: add names to list of OK globals
-            ctx.test.globals(names);
-        }
-
-        cleanup = 'function  bardInjectClean(){\n' +
-                  'bard.log("inject delete: ' + names.join(',') + '");\n' +
-                  cleanup + '}';
-
-        inject = 'function(' + params.join(',') + '){\n' + inject + '}';
-        inject = '[' + annotation + inject + ']';
-        inject = 'angular.mock.inject(' + inject + ');\n';
-
-            // NO! Don't do this! Creates ever more duplicate cleanups
-            //'afterEach(' + cleanup + ');';
-
-        /* jshint evil:true */
-        cleanup = new Function('return ' + cleanup)();
-        clearInjectFns.push( cleanup );
-
-        /* jshint evil:true */
-        inject = new Function(inject);
-        return isSpecRunning() ? inject() : inject;
+        bard.addGlobals.bind(ctx)(names);
     }
 
     function fakeLogger($provide) {
@@ -408,6 +397,24 @@
     }
 
     /**
+     * Get the spec context from parameters (if there)
+     * of from `this` (if it is the ctx as a result of `bind`)
+     */
+    function getCtxFromArgs(args) {
+        var ctx;
+        var first = args[0];
+        if (first && first.test) {
+            // the first arg was `this`: the context for this spec
+            // get it and strip it from args
+            ctx = args.shift();
+        } else if (this.test) {
+            // alternative: caller can bind bardInject to the spec context
+            ctx = this;
+        }
+        return ctx;
+    }
+
+    /**
      * Inspired by Angular; that's how they get the parms for injection
      * Todo: no longer used by `injector`. Remove?
      */
@@ -489,7 +496,7 @@
         var serviceKeys = Object.keys(service);
         var configKeys  = Object.keys(config);
 
-        serviceKeys.forEach(function(key) {
+        angular.forEach(serviceKeys, function(key) {
             var value = configKeys.indexOf(key) > -1 ?
                 config[key] : config._default;
 
@@ -508,7 +515,7 @@
 
         // for all unused config entries add a sinon stubbed
         // async method that returns the config value
-        configKeys.forEach(function(key) {
+        angular.forEach(configKeys, function(key) {
             if (serviceKeys.indexOf(key) === -1) {
                 var value = config[key];
                 if (typeof value === 'function') {
@@ -522,6 +529,29 @@
         });
 
         return service;
+    }
+
+    /**
+     *  Listen to mocha test runner events
+     *  Usage in browser:
+     *     var runner = mocha.run();
+     *     bard.mochaRunnerListener(runner);
+     */
+    function mochaRunnerListener(runner) {
+        if (!global.mocha) { return; }
+        if (!runner.ignoreLeaks) {
+            runner.on('hook end', addOkGlobals);
+        };
+
+        // When checking global leaks with mocha.checkLeaks()
+        // make sure mocha is aware of bard's okGlobals
+        function addOkGlobals(hook) {
+            // HACK: only way I've found so far to ensure that bard added globals
+            // are always inspected. Using private mocha _allowedGlobals (shhhh!)
+            if (okGlobals.length && !hook._allowedGlobals) {
+                hook._allowedGlobals = okGlobals;
+            }
+        }
     }
 
     // Replaces the accented characters of many European languages w/ unaccented chars

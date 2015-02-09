@@ -1,18 +1,29 @@
 /* jshint -W117, -W030 */
-describe('bard#mockService', function() {
+describe('bard.mockService', function() {
     'use strict';
 
     var mockService = bard.mockService;
     var flush;
+    var sandbox;
 
     beforeEach(function() {
         module();
-        bard.inject('$q', '$rootScope', '$window');
+        bard.inject(this, '$q', '$rootScope', '$window');
+        sandbox = sinon.sandbox.create();
         flush = function() { $rootScope.$apply(); };
     });
 
+    afterEach(function() {
+        //bard.addGlobals(this); // because mocha lost it !?!
+        sandbox.restore();
+    });
+
     describe('when execute the "real" DoWork service described in the usage example', function() {
-        var service = getDoWorkService();
+        var service;
+
+        beforeEach(function() {
+            service = getDoWorkService();
+        });
 
         it('`doWork1` returns a resolved promise with the "real" results', function() {
             service.doWork1(1, 2)
@@ -23,7 +34,8 @@ describe('bard#mockService', function() {
         });
 
         it('`doWork2` calls alert and returns the "real" results', function() {
-            var alert = sinon.stub($window, 'alert');
+            var alert = sandbox.stub($window, 'alert');
+            bard.addGlobals(this, 'alert'); // because sinon adds it!
             var results = service.doWork2();
             expect(results).to.equal('pointless');
             expect(alert).to.have.been.calledWith('Hi there');
@@ -83,7 +95,7 @@ describe('bard#mockService', function() {
             expect(service.doWork2).to.have.been.calledWith(1, 2);
         });
 
-        it('`doWork3` returns a resolved promise with the config._default (an empty array)', function() {
+        it('`doWork3` returns a resolved promise with config._default (empty array)', function() {
             service.doWork3(1, 2).then(expectEmptyArray);
             // verify `doWork3` is a spy
             expect(service.doWork3).to.have.been.calledWith(1, 2);
@@ -136,7 +148,7 @@ describe('bard#mockService', function() {
             flush();
         });
 
-        it('`doWork2`-`doWork4` each return a resolved promise with the default empty array', function() {
+        it('`doWork2`-`doWork4` each return resolved promise with empty array', function() {
             service.doWork2('could').then(expectEmptyArray);
             service.doWork3('be').then(expectEmptyArray);
             service.doWork4('anything').then(expectEmptyArray);
