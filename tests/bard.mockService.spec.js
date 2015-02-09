@@ -14,7 +14,6 @@ describe('bard.mockService', function() {
     });
 
     afterEach(function() {
-        //bard.addGlobals(this); // because mocha lost it !?!
         sandbox.restore();
     });
 
