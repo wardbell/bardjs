@@ -1,36 +1,50 @@
 /*jshint -W079, -W117 */
 (function() {
+
     var bard = {
         $httpBackend: $httpBackendReal,
         $q: $qReal,
         appModule: appModule,
         assertFail: assertFail,
         asyncModule: asyncModule,
+        debugging: bardDebugging,
         fakeLogger: fakeLogger,
         fakeRouteHelperProvider: fakeRouteHelperProvider,
         fakeRouteProvider: fakeRouteProvider,
         fakeStateProvider: fakeStateProvider,
         fakeToastr: fakeToastr,
         inject: bardInject,
+        log: bardLog,
         mockService: mockService,
         replaceAccentChars: replaceAccentChars,
         verifyNoOutstandingHttpRequests: verifyNoOutstandingHttpRequests,
         wrapWithDone: wrapWithDone
     };
 
+    var clearInjectFns = [];
     var currentSpec = null;
+    var debugging = false;
+    var logCounter = 0;
+    var global = (function() { return this; })();
 
-    if (window.jasmine || window.mocha) {
-        window.beforeEach(function() { currentSpec = this; });
-        window.afterEach(function() { currentSpec = null; });
+    if (global.jasmine || global.mocha) {
+        global.beforeEach('bard.beforeEach', function() {
+            currentSpec = this;
+        });
+        global.afterEach('bard.afterEach', function() {
+            currentSpec = null;
+            clearInjectFns.forEach(function(fn) { fn(); });
+            clearInjectFns.length = 0;
+        });
     } else {
         // These features don't work outside of Jasmine/Mocha tests
         bard.inject = function() { throw 'bard.inject only works within jasmine or mocha tests'; };
     }
 
-    window.bard = angular.extend(window.bard || {}, bard);
+    global.bard = angular.extend(global.bard || {}, bard);
 
     ////////////////////////
+
     /*jshint -W101 */
     /**
      *  Replaces the ngMock'ed $httpBackend with the real one from ng thus
@@ -171,50 +185,89 @@
     }
 
     /**
+     * get/set bard debugging flag
+     */
+    function bardDebugging(x){
+        if (typeof x !== 'undefined') { debugging = !!x; }
+        return debugging;
+    }
+
+    /**
+     * Write to console if bard debugging flag is on
+     */
+    function bardLog(msg) {
+        if (debugging) {
+            console.log('---bard (' + (logCounter += 1) + ') ' + msg);
+        }
+    }
+
+    /**
      * inject selected services into the windows object during test
      * then remove them when test ends with an `afterEach`.
      *
      * spares us the repetition of creating common service vars and injecting them
      *
-     * inject arguments may take one of 3 forms:
+     * Option: the first argument may be the spec context (`this`)
+     *         and MUST be if checking for global leaks
+     *
+     * remaining inject arguments may take one of 3 forms :
      *
      *    function    - This fn will be passed to ngMocks.inject.
      *                  Annotations extracted after inject does its thing.
      *    [strings]   - same string array you'd use to set fn.$inject
      *    (...string) - string arguments turned into a string array
+
      *
      * usage:
-     *    bard.inject('$log', 'dataservice');
-     *    bard.inject(['$log', 'dataservice']);
-     *    bard.inject(function($log, dataservice) { ... });
+     *
+     *    bard.inject(this, ...); // `this` === the spec context
+     *
+     *    bard.inject(this, '$log', 'dataservice');
+     *    bard.inject(this, ['$log', 'dataservice']);
+     *    bard.inject(this, function($log, dataservice) { ... });
+     *
      */
     function bardInject () {
-        var body = '',
-            cleanupBody = '',
+        var setGlobal = 'var global=(function(){return this;})();\n';
+        var annotation,
+            cleanup = setGlobal,
+            ctx,
+            first,
+            inject= setGlobal,
+            names = [],
             params;
 
-        var first = arguments[0];
+        params = Array.prototype.slice.call(arguments, 0);
+        first = params[0];
+
+        if (first && first.test){
+            // the last arg was `this`: the context for this spec
+            ctx = params.shift();
+            first = params[0];
+        } else if (this.test) {
+            // alternative: caller can bind bardInject to the spec context
+            ctx = this;
+        }
 
         if (typeof first === 'function') {
             // use ngMocks.inject to execute the func in the arg
             angular.mock.inject(first);
             params = first.$inject;
             if (!params) {
-                // unfortunately ngMocks.inject only prepares fn.$inject for us
+                // unfortunately ngMocks.inject only prepares inject.$inject for us
                 // if using strictDi as of v.1.3.8
                 // therefore, apply its annotation extraction logic manually
-                params = getFnParams(first);
+                params = getinjectParams(first);
             }
         }
         else if (angular.isArray(first)) {
             params = first; // assume is an array of strings
         }
-        else { // assume all args are strings
-            params = Array.prototype.slice.call(arguments, 0);
-        }
+        // else assume all params are strings
 
-        // we will annotate the generated fn with this string.
-        var annotation = '\'' + params.join('\',\'') + '\',';
+
+        // we will annotate the generated inject with this string.
+        annotation = '\'' + params.join('\',\'') + '\',';
 
         angular.forEach(params, function(name, ix) {
             var _name_,
@@ -227,24 +280,38 @@
                 name = pathName[pathLen - 1];
             }
 
+            names.push(name);
             _name_ = '_' + name + '_';
             params[ix] = _name_;
-            body += name + '=' + _name_ + ';';
-            cleanupBody += 'delete window.' + name + ';';
+            inject += 'global.' + name + '=' + _name_ + ';\n';
+            cleanup += 'delete global.' + name + ';\n';
 
             // todo: tolerate component names that are invalid JS identifiers, e.g. 'burning man'
         });
 
-        var fn = 'function(' + params.join(',') + ') {' + body + '}';
+        if (ctx) {
+            // Mocha: add names to list of OK globals
+            ctx.test.globals(names);
+        }
 
-        fn = '[' + annotation + fn + ']';
+        cleanup = 'function  bardInjectClean(){\n' +
+                  'bard.log("inject delete: ' + names.join(',') + '");\n' +
+                  cleanup + '}';
 
-        var exp = 'angular.mock.inject(' + fn + ');' +
-            'window.afterEach(function() {' + cleanupBody + '});'; // remove from window.
+        inject = 'function(' + params.join(',') + '){\n' + inject + '}';
+        inject = '[' + annotation + inject + ']';
+        inject = 'angular.mock.inject(' + inject + ');\n';
+
+            // NO! Don't do this! Creates ever more duplicate cleanups
+            //'afterEach(' + cleanup + ');';
 
         /* jshint evil:true */
-        var workFn = new Function(exp);
-        return isSpecRunning() ? workFn() : workFn;
+        cleanup = new Function('return ' + cleanup)();
+        clearInjectFns.push( cleanup );
+
+        /* jshint evil:true */
+        inject = new Function(inject);
+        return isSpecRunning() ? inject() : inject;
     }
 
     function fakeLogger($provide) {
