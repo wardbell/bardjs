@@ -23,30 +23,31 @@
         wrapWithDone: wrapWithDone
     };
 
+    var global = (function() { return this; })();
+
+    // mocha/jasmine/QUnit fns
+    var afterEach = global.afterEach || global.teardown;
+    var beforeEach = global.beforeEach || global.setup;
+
     var clearInject = [];
     var currentSpec = null;
     var debugging = false;
-    var global = (function() { return this; })();
     var logCounter = 0;
     var okGlobals = [];
 
-    if (global.jasmine || global.mocha) {
-        global.beforeEach('bard.beforeEach', function() {
-            currentSpec = this;
+    beforeEach(function bardTopBeforeEach() {
+        currentSpec = this;
+    });
+
+    afterEach(function bardTopAfterEach() {
+        currentSpec = null;
+        bard.log('clearing injected globals: ' + clearInject);
+        angular.forEach(clearInject, function(name) {
+            delete global[name];
         });
-        global.afterEach('bard.afterEach', function() {
-            currentSpec = null;
-            bard.log('clearing injected globals: ' + clearInject);
-            angular.forEach(clearInject, function(name) {
-                delete global[name];
-            });
-            clearInject.length = 0;
-            okGlobals.length = 0;
-        });
-    } else {
-        // These features don't work outside of Jasmine/Mocha tests
-        bard.inject = function() { throw 'bard.inject only works within jasmine or mocha tests'; };
-    }
+        clearInject.length = 0;
+        okGlobals.length = 0;
+    });
 
     global.bard = angular.extend(global.bard || {}, bard);
 
