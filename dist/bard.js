@@ -1,7 +1,7 @@
 /**
  * bardjs - Mocha/chai spec helpers for testing angular apps
  * @authors John Papa,Ward Bell
- * @version v0.0.8
+ * @version v0.0.9
  * @link https://github.com/wardbell/bardjs
  * @license MIT
  */
@@ -162,18 +162,24 @@
 
     /**
      * Prepare ngMocked application feature module
-     * along with faked toastr and routehelper
+     * along with faked toastr, routehelper,
+     * and faked router services.
      * Especially useful for controller testing
      * Use it as you would the ngMocks#module method
      *
-     *  Useage:
+     * DO NOT USE IF YOU NEED THE REAL ROUTER SERVICES!
+     * Fall back to `angular.mock.module(...)` or just `module(...)`
+     *
+     * Useage:
      *     beforeEach(bard.appModule('app.avengers'));
      *
      *     Equivalent to:
-     *       beforeEach(module(
+     *       beforeEach(angular.mock.module(
      *          'app.avengers',
      *          bard.fakeToastr,
-     *          bard.fakeRouteHelperProvider)
+     *          bard.fakeRouteHelperProvider,
+     *          bard.fakeRouteProvider,
+     *          bard.fakeStateProvider)
      *       );
      */
     function appModule() {
@@ -366,6 +372,7 @@
                     // current: {},  // fake before each test as needed
                     // routes:  {}  // fake before each test as needed
                     // more? You'll know when it fails :-)
+                    _faked: 'this is the faked $route service'
                 };
             };
         });
@@ -387,6 +394,7 @@
                     // current: {},  // fake before each test as needed
                     // state:  {}  // fake before each test as needed
                     // more? You'll know when it fails :-)
+                    _faked: 'this is the faked $state service'
                 };
             };
         });
@@ -399,6 +407,7 @@
                     // current: {},  // fake before each test as needed
                     // states:  {}  // fake before each test as needed
                     // more? You'll know when it fails :-)
+                    _faked: 'this is the faked $urlRouter service'
                 };
             };
         });

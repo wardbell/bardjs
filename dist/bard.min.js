@@ -1,7 +1,7 @@
 /**
  * bardjs - Mocha/chai spec helpers for testing angular apps
  * @authors John Papa,Ward Bell
- * @version v0.0.8
+ * @version v0.0.9
  * @link https://github.com/wardbell/bardjs
  * @license MIT
  */
