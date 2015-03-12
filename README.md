@@ -44,7 +44,8 @@ But we will call out the methods that have proven most notable and useful:
 * [asyncModule](#asyncModule) - enable async integration testing by restoring `$http` and `$q` while identifying the application module to test.
 * [inject](#inject) - inject angular and application components and store them by name on the global `window` object.
 * [fake services](#fakeServices) - register disabled services that you can spy on.
-* [log](#log) - writes messages to `console` when bard debugging is turned on
+* [log](#log) - writes messages to `console` when bard debugging is turned on.
+* [mockService](#mockService) - create a mock for any service with spies and return values for every service member.
 
 
 <a name="appModule"></a>
@@ -245,7 +246,7 @@ Bard offers fake versions of these services. Their methods names begin with the 
 Look for details in *bard.js*. They all have two features in common:
 
 1. they do nothing
-1. their function members are stub with [sinon spies](http://sinonjs.org/docs/#spies "sinon spies")
+1. their function members are stubbed with [sinon spies](http://sinonjs.org/docs/#spies "sinon spies")
 
 The spies allow a test to assert that one of the service methods was called in the expected manner.
 
@@ -278,3 +279,74 @@ But it can be helpful to sprinkle a little console logging in our code when tryi
 We may wish to leave such diagnostic logging behind ... inert for the most part but ready to go again in a future visit. We can turn conditional logging on with `bard.debugging(true)` and off again with `bard.debugging(false)`. When debugging is off, calls to `bard.log` do nothing.
 
 Some of bard's own methods call `bard.log`.
+
+
+
+<a name="mockService"></a>
+## mockService
+
+**Quickly create a mock for any service with spies and return values for every service member.**
+
+It can be painful to mock a dependency with a large API. Suppose, for example, that our app has a `dataservice` with 30 members. We want to test a particular controller that depends on this service. 
+
+That controller might call *any* of the service methods, either during initialization or when subjected to test conditions. For this round of tests, we only care when it calls the `dataservice.getAvengers` method.
+
+No matter what the controller does, the `dataservice` must not dispatch requests to a server. It's obviously terrible if the controller calls a missing method and the mock blows up. We'll have to mock every `dataservice` member ... and remember to update it as the `dataservice` evolves.
+
+Such a mock `dataservice` is tedious to write by hand, especially when we don't care what most of the members do. The bard `mockService` makes writing this fake a lot easier. The entire setup could be as simple as:
+
+    beforeEach(function() {
+
+        bard.appModule('app.avengers');
+        bard.inject(this, '$controller', '$q', '$rootScope', 'dataservice');
+
+
+        bard.mockService(dataservice, {
+            getAvengers: $q.when(avengers),
+            _default:    $q.when([])
+        });
+
+
+        controller = $controller('Avengers');
+        $rootScope.$apply();
+    });
+
+The details of `mockService` configuration are described in *bard.js*. You'll find  usage examples in the test coverage (look for *~/tests/bard.mockService.spec.js*). 
+
+We trust you can see the core ideas in this example:
+
+* you give `mockService` an instance of the real `dataservice` to act as a template.
+* the `mockService` replaces every `dataservice` member with a fake implementation.
+* all methods are stubbed with [sinon spies](http://sinonjs.org/docs/#spies "sinon spies").
+* you can supply return values (such as fulfilled promises) for *specific* methods.
+* you determine default return values for the remaining *unspecified* methods.
+
+In this case, we arranged for the `getAvengers` method to return a resolved promise with fake "avenger" objects. The other 29 methods return a resolved promise with an empty array.
+
+That's easier to write and read than a mock `dataservice` with thirty hand-coded stub methods.
+
+And here are two mocha/chai tests that could follow that setup:
+
+    it('controller activation gets avengers', function() {
+        controller.activate(); // calls `dataservice.getAvengers`
+        $rootScope.$apply();   // flush pending promises
+            
+        expect(controller.avengers).to.have.length(avengers.length); // same number as mocked
+
+        expect(dataservice.getAvengers).to.have.been.calledOnce; // it's a spy
+    });
+
+    // Call one of the default mock methods which should return 
+    // a promise resolving to an empty array
+    // Note that the controller would not have called this on its own
+    it('can call fake `dataservice.getNews`', function() {
+
+        dataservice.getNews().then(function(news) {
+            expect(news).to.have.length(0);
+        });
+
+        $rootScope.$apply(); // flush pending promises
+
+        // verify that `getNews` is actually a spy
+        expect(dataservice.getNews).to.have.been.calledOnce;
+    });
