@@ -74,7 +74,7 @@ does the work of these seven ...
 		bard.fakeStateProvider)
     );
 
->The bard library offers [several methods](fakeServices) (all beginning with the word "fake") that each disable a particular service. Don't worry if you haven't included all or any of these services in your app. Registering them will be harmless. Not using *toastr*? Not using the *UIRouter*? No problem.
+>The bard library offers [several methods](#fakeServices) (all beginning with the word "fake") that each disable a particular service. Don't worry if you haven't included all or any of these services in your app. Registering them will be harmless. Not using *toastr*? Not using the *UIRouter*? No problem.
 
 Like the [`angular.mock.module` function](https://docs.angularjs.org/api/ngMock/function/angular.mock.module "mock module"), you can add configuration arguments to the call to decorate or mock other services:
 
