@@ -11,9 +11,10 @@ module.exports = function() {
                 './bard.js',
                 './bard-ngRouteTester.js'
             ],
-            plato: {
-                js: './bard.js'
-            },
+            packages: [
+                './package.json',
+                './bower.json'
+            ],
             build: './dist/',
             report: './report/'
         };
