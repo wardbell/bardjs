@@ -1,6 +1,4 @@
 # bardjs Test Helpers
-
-[![NPM version](https://img.shields.io/npm/v/bardjs.svg?style=flat)](https://www.npmjs.com/package/bardjs)
 [![NPM version](https://img.shields.io/npm/v/bardjs.svg?style=flat)](https://www.npmjs.com/package/bardjs)
 
 **bardjs** is a small library of functions to help you write **Angular v.1.x application tests** ... whether you write them in [mocha](http://mochajs.org/ "mochajs") or [jasmine](http://jasmine.github.io/ "jasmine") or [QUnit](http://qunitjs.com/ "QUnit").
@@ -11,11 +9,9 @@ The poster child in this respect is the [`inject` method](#inject).  It can easi
 
 # Installation
 
-Get bard with [bower](http://bower.io/search/?q=bardjs "bard on bower"):
+You could clone [bardjs from github](https://github.com/wardbell/bardjs "bard on github"). Most folks will install it with [bower](http://bower.io/search/?q=bardjs "bard on bower") or [npm](https://www.npmjs.com/package/bardjs):
 
 `bower install bardjs`
-
-Get bard with [npm](https://www.npmjs.com/package/bardjs)
 
 `npm install bardjs`
 
