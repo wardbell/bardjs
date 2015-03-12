@@ -1,4 +1,5 @@
 module.exports = function() {
+    var root = './';
     var service = {
         getConfig: getConfig
     };
@@ -16,7 +17,8 @@ module.exports = function() {
                 './bower.json'
             ],
             build: './dist/',
-            report: './report/'
+            report: './report/',
+            root: root
         };
 
         return config;
