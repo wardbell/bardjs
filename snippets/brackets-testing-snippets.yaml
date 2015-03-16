@@ -1,0 +1,130 @@
+# mocha/jasmine snippets
+
+- trigger: describe
+  description: "mocha/jasmine describe"
+  scope: javascript
+  text: |
+        describe('${1:description}', function () {
+            ${2:}
+        }
+
+- trigger: it
+  description: "mocha/jasmine test (synchronous)"
+  scope: javascript
+  text: |
+        it('${1:should}', function () {
+            ${2:}
+        });
+         
+- trigger: ait
+  description: "asynchornous mocha/jasmine test"
+  scope: javascript
+  text: |
+        it('${1:should}', function (done) {
+            ${2:}
+        });
+            
+- trigger: beforeEach
+  description: "mocha/jasmine before-each-test"
+  scope: javascript
+  text: |
+        beforeEach(function () {
+            ${1:}
+        });
+        
+- trigger: afterEach
+  description: "mocha/jasmine after-each-test"
+  scope: javascript
+  text: |
+        afterEach(function () {
+            ${1:}
+        });
+        
+- trigger: donedone
+  description: ".then(done, done) - tail of async promise chain"
+  scope: javascript
+  text: |
+        .then(done, done);
+        ${1:}
+        
+# chai expectation snippets
+        
+- trigger: expect
+  description: "chai expect"
+  scope: javascript
+  text: |
+        expect(${1:expected}).to.${2:};
+
+- trigger: exeq
+  description: "chai expect to equal"
+  scope: javascript
+  text: |
+        expect(${1:expected}).to.equal(${2:value});
+        
+- trigger: exlen
+  description: "chai expect to have length"
+  scope: javascript
+  text: |
+        expect(${1:expected}).to.have.length(${2:length});
+        
+- trigger: exmatch
+  description: "chai expect to match"
+  scope: javascript
+  text: |
+        expect(${1:expected}).to.match(/${2:match}/i);
+        
+- trigger: excalled
+  description: "chai expect to have been called"
+  scope: javascript
+  text: |
+        expect(${1:expected}).to.have.been.called${2:}; 
+ 
+- trigger: exthrow
+  description: "chai expect to throw"
+  scope: javascript
+  text: |
+        expect(function () {
+            ${2:fn-that-throws};
+        }).to.throw(${1:Error}); 
+  
+# bard.js snippets
+
+- trigger: binject
+  description: "bard inject"
+  scope: javascript
+  text: |
+        bard.inject(this, ${1:quoted-dependencies});
+        
+- trigger: bcinject
+  description: "bard inject controller"
+  scope: javascript
+  text: |
+        bard.inject(this, '$controller', '$q', '$rootScope', ${1:});
+        
+- trigger: bmodule
+  description: "bard app module"
+  scope: javascript
+  text: |
+        bard.appModule('${1:app}'${2:});
+      
+- trigger: basyncmodule
+  description: "bard async module"
+  scope: javascript
+  text: |
+        bard.asyncModule('${1:app}'${2:});
+        
+- trigger: bverify
+  description: "bard.verifyNoOutstandingHttpRequests();"
+  scope: javascript
+  text: |
+        bard.verifyNoOutstandingHttpRequests();
+        ${1:}
+  
+# angular test snippets
+
+- trigger: rootApply
+  description: "$rootScope.$apply();"
+  scope: javascript
+  text: |
+        $rootScope.$apply();
+        ${1:}  

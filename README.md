@@ -7,6 +7,8 @@ What kind of help? Help with **routine tasks** that would otherwise clutter your
 
 The poster child in this respect is the [`inject` method](#inject).  It can easily remove 10 or more lines of boilerplate so you spend less time with setup and more time with your tests. Check it out.
 
+The [bardjs repo](https://github.com/wardbell/bardjs/snippets/ "bard code snippets") also contains code snippets to make writing tests a little easier. See [separate instructions](#snippets) for those below.
+
 # Installation
 
 You could clone [bardjs from github](https://github.com/wardbell/bardjs "bard on github"). Most folks will install it with [bower](http://bower.io/search/?q=bardjs "bard on bower") or [npm](https://www.npmjs.com/package/bardjs):
@@ -349,3 +351,38 @@ And here are two mocha/chai tests that could follow that setup:
         // verify that `getNews` is actually a spy
         expect(dataservice.getNews).to.have.been.calledOnce;
     });
+
+<a name="snippets"></a>
+# Brackets code snippets
+
+Code snippets make test authoring just a little easier. Here
+are instructions for loading our snippets into the [Brackets editor](http://brackets.io/ "Brackets editor").
+
+- Open the Brackets Extension manager ( File > Extension manager )
+- Install ['Brackets Snippets (by edc)'](https://github.com/chuyik/brackets-snippets)
+- Click the light bulb in Brackets' right gutter
+- Click `Settings` and then `Import`
+- Click `Choose File`
+- Locate and download [*~/snippets/brackets-testing-snippets.yaml*](https://github.com/wardbell/bardjs/snippets/brackets-testing-snippets.yaml "bard brackets snippets on github")
+- Choose either to `skip` or to `override`
+- Click `Start Import`
+
+Now try them in a JavaScript test file
+
+* `describe`
+* `it`
+* `ait` - async `it` test
+* `beforeEach`
+* `afterEach`
+* `donedone` - tail of a test promise chain: `.then(done, done);`
+* `expect` - expect(...).to
+* `exeq` - expect(...).to.be.equal
+* `exlen` - expect(...).to.have.length(...)
+* `excalled` - expect(...).to.have.been.called
+* `exthrow` - expect function to throw
+* `binject` - bard.inject
+* `bcinject` - bard.inject for a controller
+* `bmodule` - bard.appModule
+* `basyncmod` - bard.asyncModule
+* `bverify` - bard.verifyNoOutstandingHttpRequests()
+* `rootApply` - $rootScope.$apply();
