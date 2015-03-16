@@ -369,20 +369,32 @@ are instructions for loading our snippets into the [Brackets editor](http://brac
 
 Now try them in a JavaScript test file
 
-* `bdescribe` - mocha/jasmine `describe`
-* `bit` - `it` test (synchronous)
-* `bita` - async `it` test
-* `bbeforeEach` - mocha/jasmine `beforeEach`
-* `bafterEach` - mocha/jasmine `afterEach`
-* `bdone` - tail of a test promise chain: `.then(done, done);`
-* `bexpect` - expect(...).to
-* `beq` - expect(...).to.be.equal
-* `blen` - expect(...).to.have.length(...)
-* `bcalled` - expect(...).to.have.been.called
-* `bthrow` - expect function to throw
-* `binject` - bard.inject
-* `bcinject` - bard.inject for a controller
-* `bmodule` - bard.appModule
-* `basyncmod` - bard.asyncModule
-* `bverify` - bard.verifyNoOutstandingHttpRequests()
-* `bapply` - $rootScope.$apply();
+* mocha/jasmine
+
+    * `bdescribe` - mocha/jasmine `describe`
+    * `bit` - `it` test (synchronous)
+    * `bita` - async `it` test
+    * `bbeforeEach` - mocha/jasmine `beforeEach`
+    * `bafterEach` - mocha/jasmine `afterEach`
+    * `bdone` - tail of a mocha test promise chain: `.then(done, done);`
+
+
+* chai expectations
+
+    * `bexpect` - expect(...).to
+    * `bcalled` - expect(...).to.have.been.called
+    * `bequal` - expect(...).to.equal(...)
+    * `blen` - expect(...).to.have.length(...)
+    * `bmatch` - expect(...).to.match(/.../i)
+    * `bprop` - expect(...).to.have.been.property(..., ...)
+    * `bthrow` - expect function to throw
+
+
+* bard.js
+
+    * `binject` - bard.inject
+    * `bcinject` - bard.inject for a controller
+    * `bmodule` - bard.appModule
+    * `basyncmod` - bard.asyncModule
+    * `bapply` - $rootScope.$apply();
+    * `bverify` - bard.verifyNoOutstandingHttpRequests()
