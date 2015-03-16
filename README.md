@@ -363,7 +363,7 @@ are instructions for loading our snippets into the [Brackets editor](http://brac
 - Click the light bulb in Brackets' right gutter
 - Click `Settings` and then `Import`
 - Click `Choose File`
-- Locate and download [*~/snippets/brackets-testing-snippets.yaml*](https://github.com/wardbell/bardjs/snippets/brackets-testing-snippets.yaml "bard brackets snippets on github")
+- Locate and download [*~/snippets/brackets-testing-snippets.yaml*](https://github.com/wardbell/bardjs/blob/master/snippets/brackets-testing-snippets.yaml "bard brackets snippets on github") from github.
 - Choose either to `skip` or to `override`
 - Click `Start Import`
 
