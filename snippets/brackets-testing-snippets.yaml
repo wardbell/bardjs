@@ -136,3 +136,17 @@
   text: |
         $rootScope.$apply();
         ${1:}  
+
+- trigger: bwhen
+  description: "$httpBackend.when(...).respond(...);"
+  scope: javascript
+  text: |
+        $httpBackend.when('get', '${1:url}')
+                    .respond(${2:status}, {${3:data}});
+
+- trigger: bflush
+  description: "$httpBackend.flush();"
+  scope: javascript
+  text: |
+        $httpBackend.flush();
+        ${1:} 

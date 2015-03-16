@@ -396,5 +396,11 @@ Now try them in a JavaScript test file
     * `bcinject` - bard.inject for a controller
     * `bmodule` - bard.appModule
     * `basyncmod` - bard.asyncModule
-    * `bapply` - $rootScope.$apply();
     * `bverify` - bard.verifyNoOutstandingHttpRequests()
+
+
+* angular.js
+
+    * `bapply` - $rootScope.$apply();
+    * `bwhen`  - $httpBackend.when('get', {url}).respond({status}, {data});
+    * `bflush`  - $httpBackend.flush();
