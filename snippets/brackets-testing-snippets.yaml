@@ -1,6 +1,6 @@
 # mocha/jasmine snippets
 
-- trigger: describe
+- trigger: bdescribe
   description: "mocha/jasmine describe"
   scope: javascript
   text: |
@@ -8,7 +8,7 @@
             ${2:}
         }
 
-- trigger: it
+- trigger: bit
   description: "mocha/jasmine test (synchronous)"
   scope: javascript
   text: |
@@ -16,7 +16,7 @@
             ${2:}
         });
          
-- trigger: ait
+- trigger: bita
   description: "asynchornous mocha/jasmine test"
   scope: javascript
   text: |
@@ -24,7 +24,7 @@
             ${2:}
         });
             
-- trigger: beforeEach
+- trigger: bbeforeEach
   description: "mocha/jasmine before-each-test"
   scope: javascript
   text: |
@@ -32,7 +32,7 @@
             ${1:}
         });
         
-- trigger: afterEach
+- trigger: bafterEach
   description: "mocha/jasmine after-each-test"
   scope: javascript
   text: |
@@ -40,7 +40,7 @@
             ${1:}
         });
         
-- trigger: donedone
+- trigger: bdone
   description: ".then(done, done) - tail of async promise chain"
   scope: javascript
   text: |
@@ -48,38 +48,46 @@
         ${1:}
         
 # chai expectation snippets
+# see http://chaijs.com/api/bdd/
         
-- trigger: expect
+- trigger: bexpect
   description: "chai expect"
   scope: javascript
   text: |
         expect(${1:expected}).to.${2:};
 
-- trigger: exeq
+- trigger: bequal
   description: "chai expect to equal"
   scope: javascript
   text: |
         expect(${1:expected}).to.equal(${2:value});
         
-- trigger: exlen
+- trigger: blen
   description: "chai expect to have length"
   scope: javascript
   text: |
         expect(${1:expected}).to.have.length(${2:length});
         
-- trigger: exmatch
+- trigger: bmatch
   description: "chai expect to match"
   scope: javascript
   text: |
         expect(${1:expected}).to.match(/${2:match}/i);
         
-- trigger: excalled
+        
+- trigger: bprop
+  description: "chai expect to have property"
+  scope: javascript
+  text: |
+        expect(${1:expected}).to.have.property('${2:property}', ${3:value});
+        
+- trigger: bcalled
   description: "chai expect to have been called"
   scope: javascript
   text: |
         expect(${1:expected}).to.have.been.called${2:}; 
  
-- trigger: exthrow
+- trigger: bthrow
   description: "chai expect to throw"
   scope: javascript
   text: |
@@ -122,7 +130,7 @@
   
 # angular test snippets
 
-- trigger: rootApply
+- trigger: bapply
   description: "$rootScope.$apply();"
   scope: javascript
   text: |

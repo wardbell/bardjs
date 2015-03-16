@@ -9,3 +9,6 @@ bardjs Change Log
 - Need QUnit tests.
 ### 0.0.9 
 - added comments to make clear that `bard.appModule` should NOT be used if you'll be testing router services because it fakes their providers and that can't be reversed. Use regular `angular.mock.module` instead as directed.
+
+### Coming Soon
+- added brackets code snippets (draft)

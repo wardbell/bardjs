@@ -369,20 +369,20 @@ are instructions for loading our snippets into the [Brackets editor](http://brac
 
 Now try them in a JavaScript test file
 
-* `describe`
-* `it`
-* `ait` - async `it` test
-* `beforeEach`
-* `afterEach`
-* `donedone` - tail of a test promise chain: `.then(done, done);`
-* `expect` - expect(...).to
-* `exeq` - expect(...).to.be.equal
-* `exlen` - expect(...).to.have.length(...)
-* `excalled` - expect(...).to.have.been.called
-* `exthrow` - expect function to throw
+* `bdescribe` - mocha/jasmine `describe`
+* `bit` - `it` test (synchronous)
+* `bita` - async `it` test
+* `bbeforeEach` - mocha/jasmine `beforeEach`
+* `bafterEach` - mocha/jasmine `afterEach`
+* `bdone` - tail of a test promise chain: `.then(done, done);`
+* `bexpect` - expect(...).to
+* `beq` - expect(...).to.be.equal
+* `blen` - expect(...).to.have.length(...)
+* `bcalled` - expect(...).to.have.been.called
+* `bthrow` - expect function to throw
 * `binject` - bard.inject
 * `bcinject` - bard.inject for a controller
 * `bmodule` - bard.appModule
 * `basyncmod` - bard.asyncModule
 * `bverify` - bard.verifyNoOutstandingHttpRequests()
-* `rootApply` - $rootScope.$apply();
+* `bapply` - $rootScope.$apply();

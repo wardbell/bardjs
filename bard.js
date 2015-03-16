@@ -602,8 +602,10 @@
      * in the appropriate way for both success and failure
      *
      * Useage:
+     *    bard.inject('ngRouteTester', ...); // see bard-ngRouteTester.js
+     *    ...
      *    // When the DOM is ready, assert got the dashboard view
-     *    tester.until(elemIsReady, wrap(hasDashboardView, done));
+     *    ngRouteTester.until(elemIsReady, wrap(hasDashboardView, done));
      */
     function wrapWithDone(callback, done) {
         return function() {
