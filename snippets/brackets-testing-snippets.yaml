@@ -6,7 +6,7 @@
   text: |
         describe('${1:description}', function () {
             ${2:}
-        }
+        });
 
 - trigger: bit
   description: "mocha/jasmine test (synchronous)"
@@ -16,7 +16,7 @@
             ${2:}
         });
          
-- trigger: bita
+- trigger: bait
   description: "asynchornous mocha/jasmine test"
   scope: javascript
   text: |
@@ -49,7 +49,7 @@
         
 # chai expectation snippets
 # see http://chaijs.com/api/bdd/
-        
+
 - trigger: bexpect
   description: "chai expect"
   scope: javascript
@@ -86,7 +86,7 @@
   scope: javascript
   text: |
         expect(${1:expected}).to.have.been.called${2:}; 
- 
+
 - trigger: bthrow
   description: "chai expect to throw"
   scope: javascript

@@ -372,8 +372,8 @@ Now try them in a JavaScript test file
 * mocha/jasmine
 
     * `bdescribe` - mocha/jasmine `describe`
-    * `bit` - `it` test (synchronous)
-    * `bita` - async `it` test
+    * `bit`  - `it` test (synchronous)
+    * `bait` - async `it` test
     * `bbeforeEach` - mocha/jasmine `beforeEach`
     * `bafterEach` - mocha/jasmine `afterEach`
     * `bdone` - tail of a mocha test promise chain: `.then(done, done);`
