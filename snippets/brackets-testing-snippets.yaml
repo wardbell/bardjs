@@ -92,8 +92,8 @@
   scope: javascript
   text: |
         expect(function () {
-            ${2:fn-that-throws};
-        }).to.throw(${1:Error}); 
+            ${1:fn-that-throws};
+        }).to.throw(${2:Error}); 
   
 # bard.js snippets
 
