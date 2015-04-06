@@ -150,3 +150,12 @@
   text: |
         $httpBackend.flush();
         ${1:} 
+  
+# miscellaneous snippets
+- trigger: bfn
+  description: "function template"
+  scope: javascript
+  text: |
+        function ${1:}() {
+            ${2:}
+        }
