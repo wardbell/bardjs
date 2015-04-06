@@ -403,4 +403,8 @@ Now try them in a JavaScript test file
 
     * `bapply` - $rootScope.$apply();
     * `bwhen`  - $httpBackend.when('get', {url}).respond({status}, {data});
-    * `bflush`  - $httpBackend.flush();
+    * `bflush` - $httpBackend.flush();
+
+* miscellaneous
+
+    * `bfn`    - generates a function stub
