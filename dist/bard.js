@@ -1,7 +1,7 @@
 /**
  * bardjs - Mocha/chai spec helpers for testing angular v.1.x apps
  * @authors John Papa,Ward Bell
- * @version v0.1.0
+ * @version v0.1.1
  * @link https://github.com/wardbell/bardjs
  * @license MIT
  */
@@ -41,6 +41,8 @@
     var debugging = false;
     var logCounter = 0;
     var okGlobals = [];
+
+    addBindPolyfill();
 
     beforeEach(function bardTopBeforeEach() {
         currentSpec = this;
@@ -609,8 +611,10 @@
      * in the appropriate way for both success and failure
      *
      * Useage:
+     *    bard.inject('ngRouteTester', ...); // see bard-ngRouteTester.js
+     *    ...
      *    // When the DOM is ready, assert got the dashboard view
-     *    tester.until(elemIsReady, wrap(hasDashboardView, done));
+     *    ngRouteTester.until(elemIsReady, wrap(hasDashboardView, done));
      */
     function wrapWithDone(callback, done) {
         return function() {
@@ -622,4 +626,39 @@
             }
         };
     }
+
+    /*
+     *  Phantom.js does not support Function.prototype.bind (at least not before v.2.0
+     *  That's just crazy. Everybody supports bind.
+     *  Read about it here: https://groups.google.com/forum/#!msg/phantomjs/r0hPOmnCUpc/uxusqsl2LNoJ
+     *  This polyfill is copied directly from MDN
+     *  https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/bind#Compatibility
+     */
+    function addBindPolyfill() {
+        if (Function.prototype.bind) { return; } // already defined
+
+        /*jshint freeze: false */
+        Function.prototype.bind = function (oThis) {
+            if (typeof this !== 'function') {
+                // closest thing possible to the ECMAScript 5
+                // internal IsCallable function
+                throw new TypeError(
+                    'Function.prototype.bind - what is trying to be bound is not callable');
+            }
+
+            var aArgs = Array.prototype.slice.call(arguments, 1),
+                fToBind = this,
+                FuncNoOp = function () {},
+                fBound = function () {
+                    return fToBind.apply(this instanceof FuncNoOp && oThis ? this : oThis,
+                        aArgs.concat(Array.prototype.slice.call(arguments)));
+                };
+
+            FuncNoOp.prototype = this.prototype;
+            fBound.prototype = new FuncNoOp();
+
+            return fBound;
+        };
+    }
+
 })();
