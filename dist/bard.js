@@ -1,7 +1,7 @@
 /**
  * bardjs - Mocha/chai spec helpers for testing angular v.1.x apps
  * @authors John Papa,Ward Bell
- * @version v0.1.1
+ * @version v0.1.2
  * @link https://github.com/wardbell/bardjs
  * @license MIT
  */
@@ -516,7 +516,7 @@
         for (var key in service) {
             serviceKeys.push(key);
         }
-        
+
         var configKeys = [];
         for (var key in config) {
             configKeys.push(key);

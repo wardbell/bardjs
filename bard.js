@@ -509,7 +509,7 @@
         for (var key in service) {
             serviceKeys.push(key);
         }
-        
+
         var configKeys = [];
         for (var key in config) {
             configKeys.push(key);
