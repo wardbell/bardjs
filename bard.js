@@ -505,8 +505,15 @@
      */
     function mockService(service, config) {
 
-        var serviceKeys = Object.keys(service);
-        var configKeys  = Object.keys(config);
+        var serviceKeys = [];
+        for (var key in service) {
+            serviceKeys.push(key);
+        }
+        
+        var configKeys = [];
+        for (var key in config) {
+            configKeys.push(key);
+        }
 
         angular.forEach(serviceKeys, function(key) {
             var value = configKeys.indexOf(key) > -1 ?

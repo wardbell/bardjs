@@ -56,6 +56,11 @@ describe('bard.mockService', function() {
         it('does not have a `doWork5`', function() {
             expect(service).to.not.have.property('doWork5');
         });
+        
+        it('`doWorkProto` return the "real" results', function() {
+            var results = service.doWorkProto();
+            expect(results).to.be.true;
+        });
 
         it('`isActive` should be true', function() {
             expect(service.isActive).to.be.true;
@@ -119,6 +124,13 @@ describe('bard.mockService', function() {
                 });
             // verify `doWork5` is a spy
             expect(service.doWork5).to.have.been.called;
+            flush();
+        });
+        
+        it('`doWorkProto` returns `_default` value', function() {
+            service.doWorkProto(1, 2).then(expectEmptyArray);
+            // verify `doWork3` is a spy
+            expect(service.doWorkProto).to.have.been.calledWith(1, 2);
             flush();
         });
 
@@ -187,9 +199,17 @@ describe('bard.mockService', function() {
 
     ///// helpers /////
 
-    // create the exampel DoWork service from bard.mockService usage doc
+    // create the example DoWork service from bard.mockService usage doc
     function getDoWorkService() {
-        return {
+        var doWorkParent = {
+            doWorkProto: function() {
+                return true;
+            }
+        }
+        
+        var doWorkService = Object.create(doWorkParent)
+        
+        angular.extend(doWorkService, {
             doWork1:  function doWork1(a, b) {
                     return $q.when([].slice.apply(arguments));
                 },
@@ -207,7 +227,9 @@ describe('bard.mockService', function() {
                 return 'Hi from doWork4';
             },
             isActive: true
-        };
+        });
+        
+        return doWorkService;
     }
 
     function expectEmptyArray(results) {
