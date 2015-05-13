@@ -1,5 +1,13 @@
 bardjs Change Log
 ===================
+### 0.1.3 
+- documentation about dependence on sinon
+- more robust handling of `this` when not using mocha; see [issue #5](https://github.com/wardbell/bardjs/issues/5).
+
+### 0.1.2
+- handle services that have prototype methods/attributes; see
+[pr #4](https://github.com/wardbell/bardjs/pull/4).
+
 ### 0.1.1 
 - incorporate `Function.bind` polyfill (for testing in phantom.js)
 

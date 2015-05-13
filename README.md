@@ -11,25 +11,43 @@ The [bardjs repo](https://github.com/wardbell/bardjs/snippets/ "bard code snippe
 
 # Installation
 
-You could clone [bardjs from github](https://github.com/wardbell/bardjs "bard on github"). Most folks will install it with [bower](http://bower.io/search/?q=bardjs "bard on bower") or [npm](https://www.npmjs.com/package/bardjs):
+Most folks bardjs install it with [bower](http://bower.io/search/?q=bardjs "bard on bower") or [npm](https://www.npmjs.com/package/bardjs):
 
 `bower install bardjs`
 
 `npm install bardjs`
 
+You can also clone [bardjs from github](https://github.com/wardbell/bardjs "bard on github") and extract *bard.js*itself.
+
+>bard depends on [sinon.js](http://sinonjs.org/) so make sure you have that library available; bower and npm bring that down for you.
+
 Almost all of bard is in the *bard.js* file within the *dist* folder.
 
 If you're running tests in a browser, add the appropriate script tag *below* the script for your test framework library:
 
-    <!-- when loaded with bower -->
+    <!-- when installed with bower -->
     <script src="/bower_components/bardjs/dist/bard.js"></script>
 
-    <!-- when loaded with npm -->
+    <!-- when installed with npm -->
     <script src="/npm_modules/bardjs/dist/bard.js"></script>
+
+You'll need to add *sinon.js* as well
+
+    <!-- when installed with bower -->
+    <script src="/bower_components/sinon/index.js"></script>
+
+    <!-- when installed with npm -->
+    <script src="/npm_modules/sinon/lib/sinon.js"></script>
+
+## karma considerations
 
 If you're running with [karma](http://karma-runner.github.io/0.12/index.html "karma"), reference *bard.js* in *karma.config.js* among the `files` to be loaded. See the [karma "Config" documentation](http://karma-runner.github.io/0.12/config/configuration-file.html "karma config") for details.
 
->In the *dist* folder you'll also find optional plug-in extensions such as the *bard-ngRouteTester.js* which adds the `bard.ngRouteTester` helper to manage tests of the [original Angular router](https://docs.angularjs.org/api/ngRoute/service/$route "Angular $route"). 
+Be sure to include *sinon* among the karma frameworks as in this example extract:
+
+    frameworks: ['mocha', 'chai', 'sinon', 'chai-sinon'],
+
+In the *dist* folder you'll also find optional plug-in extensions such as the *bard-ngRouteTester.js* which adds the `bard.ngRouteTester` helper to manage tests of the [original Angular router](https://docs.angularjs.org/api/ngRoute/service/$route "Angular $route"). 
 
 # bard methods
 

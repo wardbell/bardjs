@@ -135,7 +135,11 @@
         });
     }
     /**
-     * Add names of globals to list of OK globals for this spec
+     * Add names of globals to list of OK globals for this mocha spec
+     * NB: Call this method ONLY if you're using mocha!
+     * NB: Turn off browser-sync else mocha detects the browser-sync globals 
+     * like ` ___browserSync___`
+     *
      * usage:
      *    addGlobals(this, 'foo');        // where `this` is the spec context
      *    addGlobals(this, 'foo', bar);
@@ -152,7 +156,7 @@
             }
         });
         // if a mocha test, add the ok globals to it
-        ctx && ctx.test.globals && ctx.test.globals(okGlobals);
+        ctx && ctx.test && ctx.test.globals && ctx.test.globals(okGlobals);
     }
 
     /**
@@ -243,8 +247,9 @@
      *
      * spares us the repetition of creating common service vars and injecting them
      *
-     * Option: the first argument may be the spec context (`this`)
-     *         and MUST be if checking for global leaks
+     * Option: the first argument may be the mocha spec context object (`this`)
+     *         It MUST be `this` if you what to check for mocha global leaks.
+     *         Do NOT supply `this` as the first arg if you're not running mocha specs.
      *
      * remaining inject arguments may take one of 3 forms :
      *
@@ -293,6 +298,9 @@
         var names = [];
         angular.forEach(args, function(name, ix) {
 
+            if (typeof name !== 'string') {
+                return; // WAT? Only strings allowed. Let's skip it and move on.
+            }
             var value = $injector.get(name);
             if (value == null) { return; }
 
@@ -410,14 +418,15 @@
 
     /**
      * Get the spec context from parameters (if there)
-     * of from `this` (if it is the ctx as a result of `bind`)
+     * or from `this` (if it is the ctx as a result of `bind`)
      */
     function getCtxFromArgs(args) {
         var ctx;
         var first = args[0];
+        // heuristic to discover if the first arg is the mocha spec context (`this`)
         if (first && first.test) {
-            // the first arg was `this`: the context for this spec
-            // get it and strip it from args
+            // The first arg was the mocha spec context (`this`)
+            // Get it and strip it from args
             ctx = args.shift();
         } else if (this.test) {
             // alternative: caller can bind bardInject to the spec context
