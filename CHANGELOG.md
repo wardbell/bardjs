@@ -1,5 +1,8 @@
 bardjs Change Log
 ===================
+### 0.1.4
+- updated dependency versioning
+
 ### 0.1.3 
 - documentation about dependence on sinon
 - more robust handling of `this` when not using mocha; see [issue #5](https://github.com/wardbell/bardjs/issues/5).

@@ -137,7 +137,7 @@
     /**
      * Add names of globals to list of OK globals for this mocha spec
      * NB: Call this method ONLY if you're using mocha!
-     * NB: Turn off browser-sync else mocha detects the browser-sync globals 
+     * NB: Turn off browser-sync else mocha detects the browser-sync globals
      * like ` ___browserSync___`
      *
      * usage:

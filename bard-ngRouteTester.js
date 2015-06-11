@@ -144,12 +144,12 @@
                     });
                 }
 
-            /**
-             * Removes the $rootElement and clears the module from the page.
-             * This is done automatically for mocha tests
-             *
-             * @method destroy
-             */
+                /**
+                 * Removes the $rootElement and clears the module from the page.
+                 * This is done automatically for mocha tests
+                 *
+                 * @method destroy
+                 */
                 function destroy() {
                     angular.forEach($timers, function(timer) {
                         clearTimeout(timer);
@@ -162,28 +162,28 @@
                 }
 
                 /**
-             * @method path
-             * @return {String} Returns the path of the current route
-             */
+                 * @method path
+                 * @return {String} Returns the path of the current route
+                 */
                 function path() {
                     return $injector.get('$location').path();
                 }
 
                 /**
-             * @method viewElement
-             * @return {Element} The current element that has ng-view attached to it
-             */
+                 * @method viewElement
+                 * @return {Element} The current element that has ng-view attached to it
+                 */
                 function viewElement() {
                     return angular.element($viewContainer[0].querySelector(viewSelector));
                 }
 
-            /**
-             * Changes the current route of the page and then fires the callback when the page has loaded
-             *
-             * @param {String} path The given path that the current route will be changed to
-             * @param {function} [callback] The given callback to fire once the view has been fully loaded
-             * @method visit
-             */
+                /**
+                 * Changes the current route of the page and then fires the callback when the page has loaded
+                 *
+                 * @param {String} path The given path that the current route will be changed to
+                 * @param {function} [callback] The given callback to fire once the view has been fully loaded
+                 * @method visit
+                 */
                 function visit(path, callback) {
 
                     // wait until view shows up
@@ -204,13 +204,13 @@
                     $rootScope.$$phase ? fn() : $rootScope.$apply(fn);
                 }
 
-            /**
-             * Keeps checking an expression until it returns a truthy value and then runs the provided callback
-             *
-             * @param {function} exp The given function to poll
-             * @param {function} callback The given callback to fire once the exp function returns a truthy value
-             * @method until
-             */
+                /**
+                 * Keeps checking an expression until it returns a truthy value and then runs the provided callback
+                 *
+                 * @param {function} exp The given function to poll
+                 * @param {function} callback The given callback to fire once the exp function returns a truthy value
+                 * @method until
+                 */
                 function until(exp, callback) {
                     var timer, delay = 50;
                     timer = setInterval(function() {
