@@ -25,7 +25,7 @@
   },
   "scripts": {
     "init": "npm install",
-    "install": "bower install"
+    "install": "bower --config.interactive=false install"
   },
   "dependencies": {
     "sinon": ">=1.12.2"
