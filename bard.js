@@ -364,6 +364,18 @@
          * all routing calls, including the default route
          * which runs on every test otherwise.
          * Make sure this goes before the inject in the spec.
+         *
+         * Optionally set up the fake behavior in your tests by monkey patching
+         * the faked $route router. For example:
+         *
+         * beforeEach(function() {
+         *      // get fake $route router service
+         *      bard.inject(this, '$route');
+         *
+         *      // plug in fake $route router values for this set of tests
+         *      $route.current = { ... fake values here ... };
+         *      $route.routes  = { ... fake values here ... };
+         *  })
          */
         $provide.provider('$route', function() {
             /* jshint validthis:true */
@@ -387,6 +399,18 @@
          * all routing calls, including the default state
          * which runs on every test otherwise.
          * Make sure this goes before the inject in the spec.
+         *
+         * Optionally set up the fake behavior in your tests by monkey patching
+         * the faked $state router. For example:
+         *
+         * beforeEach(function() {
+         *      // get fake $state router service
+         *      bard.inject(this, '$state');
+         *
+         *      // plug in fake $state router values for this set of tests
+         *      $state.current = { ... fake values here ... };
+         *      $state.state   = { ... fake values here ... };
+         *  })
          */
         $provide.provider('$state', function() {
             /* jshint validthis:true */
