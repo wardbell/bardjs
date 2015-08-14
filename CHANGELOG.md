@@ -1,5 +1,9 @@
 bardjs Change Log
 ===================
+### 0.1.8
+- no functional changes.
+- reversed 0.1.7. Apparently [peerDependecies are a horrible idea](https://github.com/npm/npm/issues/5080) and have been deprecated. It also seems that bardjs is DIRECTLY dependent on sinon so it's back to being a dependency.
+
 ### 0.1.7
 - no functional changes.
 - made sinon a [peerDependency](http://blog.nodejs.org/2013/02/07/peer-dependencies/) in npm package.json rather than a dependency. This changes means sinon is installed side-by-side bardjs (where you need it) rather than within bardjs's
