@@ -1,6 +1,6 @@
 {
   "name": "bardjs",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Spec helpers for testing angular v.1.x apps with Mocha, Jasmine or QUnit",
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
   "scripts": {
     "init": "npm install"
   },
-  "dependencies": {
+  "peerDependencies": {
     "sinon": ">=1.12.2"
   },
   "devDependencies": {

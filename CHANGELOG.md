@@ -1,10 +1,17 @@
 bardjs Change Log
 ===================
+### 0.1.7
+- no functional changes.
+- made sinon a [peerDependency](http://blog.nodejs.org/2013/02/07/peer-dependencies/) in npm package.json rather than a dependency. This changes means sinon is installed side-by-side bardjs (where you need it) rather than within bardjs's
+own node_modules folder.
+
 ### 0.1.6
+- no functional changes
 - updated package.json and bower.json descriptions to make clear that bardjs works w/ Jasmine and QUnit too
 - removed package.json install script that invoked bower ... which might not be installed by those who load bard with npm
 
 ### 0.1.5
+- no functional changes
 - added explanatory comments to $state and $route router fakes
 
 ### 0.1.4
