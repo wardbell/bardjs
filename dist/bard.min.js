@@ -1,7 +1,7 @@
 /**
- * bardjs - Mocha/chai spec helpers for testing angular v.1.x apps
+ * bardjs - Spec helpers for testing angular v.1.x apps with Mocha, Jasmine or QUnit
  * @authors John Papa,Ward Bell
- * @version v0.1.5
+ * @version v0.1.6
  * @link https://github.com/wardbell/bardjs
  * @license MIT
  */

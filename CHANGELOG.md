@@ -1,5 +1,9 @@
 bardjs Change Log
 ===================
+### 0.1.6
+- updated package.json and bower.json descriptions to make clear that bardjs works w/ Jasmine and QUnit too
+- removed package.json install script that invoked bower ... which might not be installed by those who load bard with npm
+
 ### 0.1.5
 - added explanatory comments to $state and $route router fakes
 

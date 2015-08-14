@@ -1,7 +1,7 @@
 {
   "name": "bardjs",
-  "version": "0.1.5",
-  "description": "Mocha/chai spec helpers for testing angular v.1.x apps",
+  "version": "0.1.6",
+  "description": "Spec helpers for testing angular v.1.x apps with Mocha, Jasmine or QUnit",
   "authors": [
     "John Papa",
     "Ward Bell"
