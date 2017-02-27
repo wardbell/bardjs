@@ -27,7 +27,7 @@
     "init": "npm install"
   },
   "dependencies": {
-    "sinon": "^1.15.0"
+    "sinon": "~1.15.0"
   },
   "devDependencies": {
     "chai": "^1.9.1",
