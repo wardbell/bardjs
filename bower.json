@@ -23,7 +23,7 @@
   "dependencies": {
     "angular": ">=1.3.8",
     "angular-mocks": ">=1.3.8",
-    "sinon": "http://sinonjs.org/releases/sinon-1.15.0.js"
+    "sinon": "~1.15.0"
   },
   "devDependencies": {
     "chai": "^1.9.1",
